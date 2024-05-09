@@ -21,13 +21,13 @@ module Cloudfront
             trusted_ipv4_proxies = json["prefixes"].select do |details|
               details["service"] == 'CLOUDFRONT'
             end.map do |details|
-              IPAddr.new(details["ip_prefix"])
+              details["ip_prefix"]
             end
 
             trusted_ipv6_proxies = json["ipv6_prefixes"].select do |details|
               details["service"] == 'CLOUDFRONT'
             end.map do |details|
-              IPAddr.new(details["ipv6_prefix"])
+              details["ipv6_prefix"]
             end
 
             trusted_ipv4_proxies + trusted_ipv6_proxies
@@ -36,7 +36,7 @@ module Cloudfront
           end
         end
          def fetch_with_cache
-          ::Rails.cache.fetch("cloudfront-rails-ips",
+          ::Rails.cache.fetch("cloudfront-rails-ips-str",
                               expires_in: ::Rails.application.config.cloudfront.expires_in) do
             self.fetch
           end

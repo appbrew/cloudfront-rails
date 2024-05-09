@@ -35,7 +35,9 @@ module Cloudfront
 
       config.after_initialize do |app|
         begin
-          ::Rails.application.config.cloudfront.ips += Importer.fetch_with_cache
+          ::Rails.application.config.cloudfront.ips += Importer.fetch_with_cache.map do |str|
+            IPAddr.new(str)
+          end
         rescue Importer::ResponseError => e
           ::Rails.logger.error "Cloudfront::Rails: Couldn't import from Cloudfront: #{e.response}"
         rescue => e
